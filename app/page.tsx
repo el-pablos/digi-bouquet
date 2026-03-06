@@ -5,6 +5,50 @@ import MusicPlayer from "@/components/MusicPlayer";
 export default function Home() {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black px-4">
+      {/* SEO: JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'Digi-Bouquet',
+            description: 'Create and send beautiful digital flower bouquets online for free.',
+            url: 'https://digibouquet.tams.codes',
+            applicationCategory: 'Lifestyle',
+            operatingSystem: 'Web Browser',
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+            },
+            author: {
+              '@type': 'Person',
+              name: 'Tama',
+              url: 'https://github.com/el-pablos',
+            },
+            keywords: 'digital bouquet, flower bouquet builder, send digital flowers online',
+            image: 'https://pub-4ac1b7f0da8c43e8983d7821a18a8c0d.r2.dev/other/digibouquet.png',
+          }),
+        }}
+      />
+
+      {/* SEO content — visually hidden but accessible by crawlers */}
+      <div className="sr-only">
+        <h2>Digital Flower Bouquet Builder — Free Online</h2>
+        <p>
+          Create a beautiful digital flower bouquet and send it to someone special.
+          Choose from roses, peonies, tulips, orchids, sunflowers, daisies, lilies,
+          dahlias, carnations, zinnias, ranunculus, and anemones.
+          Build your perfect digital bouquet in color or elegant black and white.
+          Share your digital flower arrangement via link or WhatsApp.
+          Made with love by Tama. Inspired by @pau_wee_.
+        </p>
+        <p>
+          Digi-Bouquet adalah platform bouquet digital gratis. Buat karangan bunga digital
+          dan kirim ke orang yang kamu sayang. Digital bouquet builder terbaik, gratis, dan mudah digunakan.
+        </p>
+      </div>
       {/* Decorative peony - top left */}
       <div className="pointer-events-none absolute -left-16 -top-16 h-64 w-64 opacity-30 md:h-96 md:w-96">
         <Image
