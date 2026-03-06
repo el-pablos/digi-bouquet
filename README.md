@@ -43,7 +43,7 @@ Live demo: [digibouquet.tams.codes](https://digibouquet.tams.codes/)
 - ⚡ **Redis Caching** — Data bouquet di-cache biar loading cepet
 - 📱 **Responsive Design** — Tampil cantik di HP, tablet, dan desktop
 - 🎭 **Animasi Smooth** — Fade-in, pulse glow, dan transisi yang halus
-- 🎵 **Music Player** — Background music YouTube (Kacamata — Afgan) dengan toggle play/pause
+- 🎵 **Music Player** — Background music YouTube (Kacamata — Afgan) dengan autoplay muted saat load, unmute on klik
 - ✍️ **Pesan & Identitas** — Tulis nama pengirim, penerima, dan pesan manis di setiap bouquet
 - 🚀 **Auto Deploy** — Push ke `main` langsung deploy otomatis ke Vercel via GitHub Actions
 - 🌐 **Custom Domain** — Akses di [digibouquet.tams.codes](https://digibouquet.tams.codes)
@@ -51,6 +51,8 @@ Live demo: [digibouquet.tams.codes](https://digibouquet.tams.codes/)
 - 📋 **Copy Link & Share** — Tombol copy link dan Web Share API untuk berbagi bouquet
 - 💚 **WhatsApp Share** — Kirim bouquet ke WhatsApp dengan pesan sweet otomatis
 - 🔀 **Customization** — Try New Arrangement (acak posisi bunga) dan Change Greenery di builder
+- 🎨 **Elegant Design** — Bouquet fan/dome arrangement dengan warm cream background, radial glow, dan drop-shadow
+- 🏷️ **SEO Optimized** — Full metadata, Open Graph, Twitter Card, JSON-LD, sitemap.xml, robots.txt
 - ♿ **Aksesibel** — Semua elemen punya aria-label dan alt text yang proper
 
 ---
@@ -81,6 +83,9 @@ digi-bouquet/
 │   ├── bouquet/page.tsx          # Halaman builder bouquet
 │   ├── bouquet/[id]/page.tsx     # Halaman individual bouquet (shareable)
 │   ├── garden/page.tsx           # Halaman garden
+│   ├── garden/layout.tsx         # Garden metadata SEO
+│   ├── sitemap.ts                # Auto-generated sitemap.xml
+│   ├── robots.ts                 # Auto-generated robots.txt
 │   ├── globals.css               # Tailwind + custom styles
 │   ├── layout.tsx                # Root layout + metadata
 │   └── page.tsx                  # Homepage
@@ -104,7 +109,7 @@ digi-bouquet/
 ├── types/
 │   └── index.ts                  # TypeScript type definitions
 ├── __tests__/
-│   ├── unit/                     # 12 unit test suites (98 tests)
+│   ├── unit/                     # 12 unit test suites (99 tests)
 │   └── e2e/                      # 3 E2E spec files (25 tests)
 ├── __mocks__/
 │   └── uuid.ts                   # UUID mock untuk Jest
