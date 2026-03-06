@@ -47,6 +47,10 @@ Live demo: [digibouquet.tams.codes](https://digibouquet.tams.codes/)
 - ✍️ **Pesan & Identitas** — Tulis nama pengirim, penerima, dan pesan manis di setiap bouquet
 - 🚀 **Auto Deploy** — Push ke `main` langsung deploy otomatis ke Vercel via GitHub Actions
 - 🌐 **Custom Domain** — Akses di [digibouquet.tams.codes](https://digibouquet.tams.codes)
+- 🔗 **Halaman Bouquet Individual** — Setiap bouquet punya URL unik yang bisa dishare (`/bouquet/{id}`)
+- 📋 **Copy Link & Share** — Tombol copy link dan Web Share API untuk berbagi bouquet
+- 💚 **WhatsApp Share** — Kirim bouquet ke WhatsApp dengan pesan sweet otomatis
+- 🔀 **Customization** — Try New Arrangement (acak posisi bunga) dan Change Greenery di builder
 - ♿ **Aksesibel** — Semua elemen punya aria-label dan alt text yang proper
 
 ---
@@ -71,9 +75,11 @@ digi-bouquet/
 ├── app/
 │   ├── api/
 │   │   ├── bouquet/route.ts     # POST — simpan bouquet baru
+│   │   ├── bouquet/[id]/route.ts # GET — ambil satu bouquet by ID
 │   │   ├── garden/route.ts      # GET — ambil semua bouquet
 │   │   └── health/route.ts      # GET — health check + Redis ping
 │   ├── bouquet/page.tsx          # Halaman builder bouquet
+│   ├── bouquet/[id]/page.tsx     # Halaman individual bouquet (shareable)
 │   ├── garden/page.tsx           # Halaman garden
 │   ├── globals.css               # Tailwind + custom styles
 │   ├── layout.tsx                # Root layout + metadata
@@ -87,15 +93,18 @@ digi-bouquet/
 │   ├── GardenGrid.tsx            # Grid bouquet di garden
 │   ├── HomeButtons.tsx           # 3 tombol navigasi homepage
 │   ├── LoadingSpinner.tsx        # Animasi loading
-│   └── MusicPlayer.tsx           # YouTube music player toggle
+│   ├── MusicPlayer.tsx           # YouTube music player toggle
+│   ├── ShareButtons.tsx          # Copy link, share, WA buttons
+│   └── WhatsAppShare.tsx         # Modal kirim bouquet via WhatsApp
 ├── lib/
 │   ├── flowers.ts                # Data bunga + URL generators
 │   ├── redis.ts                  # Redis client singleton + helpers
-│   └── utils.ts                  # Utility functions
+│   ├── utils.ts                  # Utility functions
+│   └── whatsapp.ts               # WhatsApp message & URL generator
 ├── types/
 │   └── index.ts                  # TypeScript type definitions
 ├── __tests__/
-│   ├── unit/                     # 9 unit test suites (77 tests)
+│   ├── unit/                     # 12 unit test suites (98 tests)
 │   └── e2e/                      # 3 E2E spec files (25 tests)
 ├── __mocks__/
 │   └── uuid.ts                   # UUID mock untuk Jest
@@ -125,9 +134,15 @@ flowchart TD
     D --> E
     
     E --> E2[✍️ Tulis Pesan & Identitas]
-    E2 --> F[👁️ Preview Bouquet]
-    F --> G[📤 Submit ke Garden]
-    G --> H
+    E2 --> F[👁️ Preview + Customize]
+    F -->|🔀 Arrangement / 🌿 Greenery| F
+    F --> G[📤 Submit Bouquet]
+    G --> P[🌹 Halaman Bouquet Individual]
+    
+    P --> Q{Share Options}
+    Q -->|Copy Link| R[📋 Link Disalin]
+    Q -->|Share| S[🔗 Web Share API]
+    Q -->|WhatsApp| T[💚 Kirim via WA]
     
     H --> I{Ada Bouquet?}
     I -->|Ya| J[📋 Tampilkan Grid Bouquet]
@@ -281,6 +296,20 @@ Simpan bouquet baru ke Redis.
 ```json
 {
   "success": true,
+  "bouquetId": "a1b2c3d4-..."
+}
+```
+
+---
+
+### `GET /api/bouquet/[id]`
+
+Ambil satu bouquet berdasarkan ID (dengan per-bouquet caching 5 menit).
+
+**Response (200):**
+```json
+{
+  "success": true,
   "bouquet": {
     "id": "a1b2c3d4-...",
     "flowers": ["rose", "tulip", "orchid", "dahlia", "peony", "lily"],
@@ -288,10 +317,19 @@ Simpan bouquet baru ke Redis.
     "bushIndex": 2,
     "fromName": "Anisa",
     "toName": "Budi",
-    "message": "Selamat ulang tahun! 🎂",
+    "message": "Selamat ulang tahun! \ud83c\udf82",
     "createdAt": "2026-02-15T10:00:00.000Z"
   }
 }
+```
+
+**Response (404):**
+```json
+{
+  "success": false,
+  "error": "Bouquet tidak ditemukan"
+}
+```
 ```
 
 ---
