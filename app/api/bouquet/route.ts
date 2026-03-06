@@ -7,7 +7,7 @@ import { BouquetItem, BouquetMode, BushIndex } from '@/types';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { flowers, mode, bushIndex } = body;
+    const { flowers, mode, bushIndex, fromName, toName, message } = body;
 
     // Validate flowers
     if (!Array.isArray(flowers) || flowers.length < 6 || flowers.length > 10) {
@@ -42,6 +42,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate optional fields
+    if (fromName !== undefined && (typeof fromName !== 'string' || fromName.length > 50)) {
+      return NextResponse.json(
+        { success: false, error: 'fromName harus string max 50 karakter' },
+        { status: 400 }
+      );
+    }
+
+    if (toName !== undefined && (typeof toName !== 'string' || toName.length > 50)) {
+      return NextResponse.json(
+        { success: false, error: 'toName harus string max 50 karakter' },
+        { status: 400 }
+      );
+    }
+
+    if (message !== undefined && (typeof message !== 'string' || message.length > 200)) {
+      return NextResponse.json(
+        { success: false, error: 'Message harus string max 200 karakter' },
+        { status: 400 }
+      );
+    }
+
     const bouquetId = generateId();
 
     const bouquet: BouquetItem = {
@@ -50,6 +72,9 @@ export async function POST(request: NextRequest) {
       mode: mode as BouquetMode,
       bushIndex: bushIndex as BushIndex,
       createdAt: new Date().toISOString(),
+      ...(fromName && { fromName: fromName.trim() }),
+      ...(toName && { toName: toName.trim() }),
+      ...(message && { message: message.trim() }),
     };
 
     // Save to Redis
