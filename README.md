@@ -398,6 +398,14 @@ Proyek ini berjalan di custom domain **[digibouquet.tams.codes](https://digibouq
 
 ---
 
+## Credits & Inspirasi
+
+Proyek ini dibuat oleh **Tama** ([@el-pablos](https://github.com/el-pablos)).
+
+Terinspirasi dari karya luar biasa [@pau_wee_](https://x.com/pau_wee_) — creator website [digibouquet.vercel.app](https://digibouquet.vercel.app/) yang menjadi referensi utama proyek ini. Terima kasih atas ide yang cantik dan elegan! 🌸
+
+---
+
 ## 👥 Kontributor
 
 <a href="https://github.com/el-pablos">
