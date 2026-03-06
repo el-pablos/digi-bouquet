@@ -18,9 +18,9 @@ function BouquetBuilderContent() {
 
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedFlowers, setSelectedFlowers] = useState<FlowerType[]>([]);
-  const [bushIndex] = useState<BushIndex>(() => getRandomBushIndex());
+  const [bushIndex, setBushIndex] = useState<BushIndex>(() => getRandomBushIndex());
+  const [positionSeed, setPositionSeed] = useState(0);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [bouquetMeta, setBouquetMeta] = useState({ fromName: '', toName: '', message: '' });
 
   const handleNext = useCallback((flowers: FlowerType[]) => {
@@ -52,40 +52,13 @@ function BouquetBuilderContent() {
         throw new Error('Gagal menyimpan bouquet');
       }
 
-      setSubmitted(true);
+      const data = await response.json();
+      if (data.bouquetId) {
+        router.push(`/bouquet/${data.bouquetId}`);
+      }
     } catch {
       setSubmitting(false);
     }
-  }
-
-  if (submitted) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-black px-4">
-        <div className="animate-fade-in text-center">
-          <h1 className="mb-4 text-3xl font-bold uppercase tracking-widest text-white md:text-4xl">
-            Bouquet Sent!
-          </h1>
-          <p className="text-white/60">Bouquet kamu sudah masuk ke garden.</p>
-        </div>
-        <BouquetPreview flowers={selectedFlowers} mode={mode} bushIndex={bushIndex} />
-        <div className="flex gap-4">
-          <Link
-            href="/garden"
-            className="rounded-lg bg-pink-500 px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-pink-600"
-            aria-label="Lihat garden"
-          >
-            View Garden
-          </Link>
-          <Link
-            href="/"
-            className="rounded-lg border border-white/20 px-8 py-3 text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-white/10"
-            aria-label="Kembali ke home"
-          >
-            Home
-          </Link>
-        </div>
-      </main>
-    );
   }
 
   return (
@@ -105,10 +78,29 @@ function BouquetBuilderContent() {
       {step === 2 && (
         <div className="animate-fade-in flex flex-col items-center gap-8">
           <h1 className="text-3xl font-bold uppercase tracking-widest text-white md:text-4xl">
-            Your Bouquet
+            Customize Your Bouquet
           </h1>
 
-          <BouquetPreview flowers={selectedFlowers} mode={mode} bushIndex={bushIndex} />
+          <div className="flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setPositionSeed((prev) => prev + 1)}
+              aria-label="Coba susunan bunga baru"
+              className="rounded-lg bg-white px-6 py-3 text-sm font-semibold uppercase tracking-widest text-black transition-colors hover:bg-white/90"
+            >
+              Try a New Arrangement
+            </button>
+            <button
+              type="button"
+              onClick={() => setBushIndex((prev) => (prev === 3 ? 1 : ((prev + 1) as BushIndex)))}
+              aria-label="Ganti greenery bush"
+              className="rounded-lg border border-white/30 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-white transition-colors hover:bg-white/10"
+            >
+              Change Greenery
+            </button>
+          </div>
+
+          <BouquetPreview flowers={selectedFlowers} mode={mode} bushIndex={bushIndex} positionSeed={positionSeed} />
 
           <BouquetMessage onChange={(data) => setBouquetMeta(data)} />
 
