@@ -72,7 +72,7 @@ export default async function BouquetViewPage({ params }: PageProps) {
       {/* Logo */}
       <div className="relative mb-6 h-16 w-48 md:h-20 md:w-60">
         <Image
-          src="https://pub-4ac1b7f0da8c43e8983d7821a18a8c0d.r2.dev/other/logo-text.png"
+          src="https://pub-4ac1b7f0da8c43e8983d7821a18a8c0d.r2.dev/other/digibouquet.png"
           alt="Digi-Bouquet logo"
           fill
           sizes="240px"
