@@ -7,6 +7,7 @@ import { FlowerType, BouquetMode, BushIndex } from '@/types';
 import { getRandomBushIndex } from '@/lib/flowers';
 import FlowerGrid from '@/components/FlowerGrid';
 import BouquetPreview from '@/components/BouquetPreview';
+import BouquetMessage from '@/components/BouquetMessage';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 function BouquetBuilderContent() {
@@ -20,6 +21,7 @@ function BouquetBuilderContent() {
   const [bushIndex] = useState<BushIndex>(() => getRandomBushIndex());
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [bouquetMeta, setBouquetMeta] = useState({ fromName: '', toName: '', message: '' });
 
   const handleNext = useCallback((flowers: FlowerType[]) => {
     setSelectedFlowers(flowers);
@@ -40,6 +42,9 @@ function BouquetBuilderContent() {
           flowers: selectedFlowers,
           mode,
           bushIndex,
+          fromName: bouquetMeta.fromName.trim() || undefined,
+          toName: bouquetMeta.toName.trim() || undefined,
+          message: bouquetMeta.message.trim() || undefined,
         }),
       });
 
@@ -104,6 +109,8 @@ function BouquetBuilderContent() {
           </h1>
 
           <BouquetPreview flowers={selectedFlowers} mode={mode} bushIndex={bushIndex} />
+
+          <BouquetMessage onChange={(data) => setBouquetMeta(data)} />
 
           <div className="flex gap-4">
             <button
