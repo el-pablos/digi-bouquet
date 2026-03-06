@@ -1,5 +1,6 @@
 import Image from "next/image";
 import HomeButtons from "@/components/HomeButtons";
+import MusicPlayer from "@/components/MusicPlayer";
 
 export default function Home() {
   return (
@@ -74,6 +75,9 @@ export default function Home() {
           </a>
         </footer>
       </div>
+
+      {/* Music Player */}
+      <MusicPlayer />
     </main>
   );
 }
