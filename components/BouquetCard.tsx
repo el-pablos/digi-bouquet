@@ -78,6 +78,16 @@ export default function BouquetCard({ bouquet }: BouquetCardProps) {
 
       <div className="px-3 py-2 text-center">
         <p className="text-xs text-white/50">{formatDate(createdAt)}</p>
+        <div className="mt-2 space-y-0.5 border-t border-white/5 pt-2">
+          <p className="text-xs text-pink-300/70">
+            {bouquet.fromName || 'Anonim'} ♥ {bouquet.toName || 'Seseorang'}
+          </p>
+          {bouquet.message && (
+            <p className="overflow-hidden text-[11px] italic leading-snug text-white/40 line-clamp-2">
+              {bouquet.message}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
