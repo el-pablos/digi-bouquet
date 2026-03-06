@@ -85,4 +85,19 @@ describe('BouquetPreview', () => {
     bushBg = screen.getByAltText('Bush background');
     expect(bushBg).toHaveAttribute('src', expect.stringContaining('bush-3.png'));
   });
+
+  it('merender dengan positionSeed berbeda tanpa error', () => {
+    const { rerender } = render(
+      <BouquetPreview flowers={defaultFlowers} mode="color" bushIndex={1} positionSeed={0} />
+    );
+    expect(screen.getByLabelText('Preview bouquet color dengan 6 bunga')).toBeInTheDocument();
+
+    rerender(
+      <BouquetPreview flowers={defaultFlowers} mode="color" bushIndex={1} positionSeed={42} />
+    );
+    expect(screen.getByLabelText('Preview bouquet color dengan 6 bunga')).toBeInTheDocument();
+    // All flowers still rendered
+    expect(screen.getByAltText('Bunga rose')).toBeInTheDocument();
+    expect(screen.getByAltText('Bunga lily')).toBeInTheDocument();
+  });
 });
