@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BouquetItem } from '@/types';
 import WhatsAppShare from './WhatsAppShare';
 
@@ -8,14 +8,14 @@ interface ShareButtonsProps {
   bouquet: BouquetItem;
 }
 
+function checkCanShare(): boolean {
+  return typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+}
+
 export default function ShareButtons({ bouquet }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
-  const [canShare, setCanShare] = useState(false);
+  const [canShare] = useState(checkCanShare);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
-
-  useEffect(() => {
-    setCanShare(typeof navigator !== 'undefined' && !!navigator.share);
-  }, []);
 
   async function handleCopy() {
     try {
