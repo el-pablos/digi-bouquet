@@ -8,6 +8,7 @@ interface BouquetPreviewProps {
   flowers: FlowerType[];
   mode: BouquetMode;
   bushIndex: BushIndex;
+  positionSeed?: number;
 }
 
 const FLOWER_POSITIONS = [
@@ -23,9 +24,23 @@ const FLOWER_POSITIONS = [
   { top: '28%', left: '50%', rotate: -20, scale: 1.0 },
 ];
 
-export default function BouquetPreview({ flowers, mode, bushIndex }: BouquetPreviewProps) {
+function shufflePositions(positions: typeof FLOWER_POSITIONS, seed: number) {
+  const arr = [...positions];
+  let s = seed;
+  for (let i = arr.length - 1; i > 0; i--) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    const j = s % (i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+export default function BouquetPreview({ flowers, mode, bushIndex, positionSeed = 0 }: BouquetPreviewProps) {
   const bushBgUrl = getBushBackgroundUrl(bushIndex, mode);
   const bushTopUrl = getBushTopUrl(bushIndex, mode);
+  const positions = positionSeed === 0
+    ? FLOWER_POSITIONS
+    : shufflePositions(FLOWER_POSITIONS, positionSeed);
 
   return (
     <div
@@ -46,7 +61,7 @@ export default function BouquetPreview({ flowers, mode, bushIndex }: BouquetPrev
 
       {/* Layer 2: Flowers */}
       {flowers.map((flower, index) => {
-        const pos = FLOWER_POSITIONS[index % FLOWER_POSITIONS.length];
+        const pos = positions[index % positions.length];
         return (
           <div
             key={`${flower}-${index}`}
