@@ -71,4 +71,36 @@ describe('BouquetCard', () => {
     const bushBg = screen.getByAltText('Bush background');
     expect(bushBg).toHaveAttribute('src', expect.stringContaining('bush-3.png'));
   });
+
+  it('tampil "Anonim ♥ Seseorang" saat fromName dan toName tidak ada', () => {
+    render(<BouquetCard bouquet={mockBouquet} />);
+    expect(screen.getByText(/Anonim ♥ Seseorang/)).toBeInTheDocument();
+  });
+
+  it('tampil fromName dan toName custom jika diberikan', () => {
+    const bouquetWithAuthor: BouquetItem = {
+      ...mockBouquet,
+      fromName: 'Alice',
+      toName: 'Bob',
+    };
+    render(<BouquetCard bouquet={bouquetWithAuthor} />);
+    expect(screen.getByText(/Alice ♥ Bob/)).toBeInTheDocument();
+  });
+
+  it('tampil message saat ada', () => {
+    const bouquetWithMessage: BouquetItem = {
+      ...mockBouquet,
+      message: 'Semoga harimu indah!',
+    };
+    render(<BouquetCard bouquet={bouquetWithMessage} />);
+    expect(screen.getByText('Semoga harimu indah!')).toBeInTheDocument();
+  });
+
+  it('tidak tampil elemen message saat undefined', () => {
+    render(<BouquetCard bouquet={mockBouquet} />);
+    // Should show author line but no message paragraph
+    expect(screen.getByText(/Anonim ♥ Seseorang/)).toBeInTheDocument();
+    const messageEl = screen.queryByText(/semoga/i);
+    expect(messageEl).not.toBeInTheDocument();
+  });
 });
