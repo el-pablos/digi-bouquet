@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/el-pablos/digi-bouquet/actions/workflows/ci.yml"><img src="https://github.com/el-pablos/digi-bouquet/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/el-pablos/digi-bouquet/actions/workflows/deploy.yml"><img src="https://github.com/el-pablos/digi-bouquet/actions/workflows/deploy.yml/badge.svg" alt="Deploy" /></a>
   <a href="https://github.com/el-pablos/digi-bouquet/releases"><img src="https://img.shields.io/github/v/release/el-pablos/digi-bouquet" alt="Latest Release" /></a>
   <a href="https://github.com/el-pablos/digi-bouquet/blob/main/LICENSE"><img src="https://img.shields.io/github/license/el-pablos/digi-bouquet" alt="License" /></a>
   <img src="https://img.shields.io/github/languages/top/el-pablos/digi-bouquet" alt="Top Language" />
@@ -22,7 +23,7 @@
 
 **Digi-Bouquet** adalah web app interaktif buat bikin bouquet bunga digital. User bisa pilih dari 12 jenis bunga, atur komposisinya, preview hasilnya, terus kirim ke "garden" yang bisa dilihat semua orang. Tersedia dalam mode **warna** dan **hitam-putih**.
 
-Live demo: [digibouquet.vercel.app](https://digibouquet.vercel.app/)
+Live demo: [digibouquet.tams.codes](https://digibouquet.tams.codes/)
 
 ## 📸 Screenshot
 
@@ -42,6 +43,10 @@ Live demo: [digibouquet.vercel.app](https://digibouquet.vercel.app/)
 - ⚡ **Redis Caching** — Data bouquet di-cache biar loading cepet
 - 📱 **Responsive Design** — Tampil cantik di HP, tablet, dan desktop
 - 🎭 **Animasi Smooth** — Fade-in, pulse glow, dan transisi yang halus
+- 🎵 **Music Player** — Background music YouTube (Kacamata — Afgan) dengan toggle play/pause
+- ✍️ **Pesan & Identitas** — Tulis nama pengirim, penerima, dan pesan manis di setiap bouquet
+- 🚀 **Auto Deploy** — Push ke `main` langsung deploy otomatis ke Vercel via GitHub Actions
+- 🌐 **Custom Domain** — Akses di [digibouquet.tams.codes](https://digibouquet.tams.codes)
 - ♿ **Aksesibel** — Semua elemen punya aria-label dan alt text yang proper
 
 ---
@@ -75,12 +80,14 @@ digi-bouquet/
 │   └── page.tsx                  # Homepage
 ├── components/
 │   ├── BouquetCard.tsx           # Card preview di garden
+│   ├── BouquetMessage.tsx        # Form identitas & pesan bouquet
 │   ├── BouquetPreview.tsx        # Preview 3-layer bouquet
 │   ├── FlowerGrid.tsx            # Grid pemilihan bunga
 │   ├── FlowerItem.tsx            # Item bunga individual
 │   ├── GardenGrid.tsx            # Grid bouquet di garden
 │   ├── HomeButtons.tsx           # 3 tombol navigasi homepage
-│   └── LoadingSpinner.tsx        # Animasi loading
+│   ├── LoadingSpinner.tsx        # Animasi loading
+│   └── MusicPlayer.tsx           # YouTube music player toggle
 ├── lib/
 │   ├── flowers.ts                # Data bunga + URL generators
 │   ├── redis.ts                  # Redis client singleton + helpers
@@ -88,12 +95,13 @@ digi-bouquet/
 ├── types/
 │   └── index.ts                  # TypeScript type definitions
 ├── __tests__/
-│   ├── unit/                     # 7 unit test suites (62 tests)
+│   ├── unit/                     # 9 unit test suites (77 tests)
 │   └── e2e/                      # 3 E2E spec files (25 tests)
 ├── __mocks__/
 │   └── uuid.ts                   # UUID mock untuk Jest
 ├── .github/workflows/
 │   ├── ci.yml                    # CI pipeline
+│   ├── deploy.yml                # Auto deploy ke Vercel
 │   └── release.yml               # Auto release pipeline
 ├── playwright.config.ts          # Playwright E2E config
 ├── jest.config.ts                # Jest unit test config
@@ -116,7 +124,8 @@ flowchart TD
     C --> E[🌷 Pilih 6-10 Bunga]
     D --> E
     
-    E --> F[👁️ Preview Bouquet]
+    E --> E2[✍️ Tulis Pesan & Identitas]
+    E2 --> F[👁️ Preview Bouquet]
     F --> G[📤 Submit ke Garden]
     G --> H
     
@@ -142,6 +151,9 @@ erDiagram
         array flowers "FlowerType[] (6-10 items)"
         string mode "color | mono"
         number bushIndex "1 | 2 | 3 | 4"
+        string fromName "Nama pengirim (opsional, max 50)"
+        string toName "Nama penerima (opsional, max 50)"
+        string message "Pesan bouquet (opsional, max 200)"
         string createdAt "ISO 8601 timestamp"
     }
     
@@ -218,6 +230,7 @@ npm run build
 | `REDIS_HOST` | Hostname Redis server | `redis-xxxxx.cloud.redislabs.com` |
 | `REDIS_PORT` | Port Redis server | `11343` |
 | `REDIS_PASSWORD` | Password Redis server | `your-redis-password` |
+| `NEXT_PUBLIC_SITE_URL` | URL situs production | `https://digibouquet.tams.codes` |
 
 > ⚠️ **Jangan pernah commit file `.env.local`!** File ini sudah ada di `.gitignore`.
 
@@ -249,7 +262,10 @@ Simpan bouquet baru ke Redis.
 {
   "flowers": ["rose", "tulip", "orchid", "dahlia", "peony", "lily"],
   "mode": "color",
-  "bushIndex": 2
+  "bushIndex": 2,
+  "fromName": "Anisa",
+  "toName": "Budi",
+  "message": "Selamat ulang tahun! 🎂"
 }
 ```
 
@@ -257,6 +273,9 @@ Simpan bouquet baru ke Redis.
 - `flowers`: Array of FlowerType, min 6, max 10 items
 - `mode`: `"color"` atau `"mono"`
 - `bushIndex`: 1, 2, 3, atau 4
+- `fromName`: String opsional, max 50 karakter
+- `toName`: String opsional, max 50 karakter
+- `message`: String opsional, max 200 karakter
 
 **Response (201):**
 ```json
@@ -267,6 +286,9 @@ Simpan bouquet baru ke Redis.
     "flowers": ["rose", "tulip", "orchid", "dahlia", "peony", "lily"],
     "mode": "color",
     "bushIndex": 2,
+    "fromName": "Anisa",
+    "toName": "Budi",
+    "message": "Selamat ulang tahun! 🎂",
     "createdAt": "2026-02-15T10:00:00.000Z"
   }
 }
@@ -297,13 +319,29 @@ Ambil semua bouquet dari Redis (dengan caching 60 detik).
 
 ## 🚢 Deployment ke Vercel
 
+### Auto Deploy (GitHub Actions)
+
+Setiap push ke branch `main` akan otomatis di-deploy ke Vercel via GitHub Actions workflow [deploy.yml](.github/workflows/deploy.yml).
+
+**GitHub Secrets yang dibutuhkan:**
+- `VERCEL_TOKEN` — Token dari Vercel dashboard
+- `VERCEL_ORG_ID` — Organisation/Account ID Vercel
+- `VERCEL_PROJECT_ID` — Project ID Vercel
+
+### Manual Deploy
+
 1. Fork/push repo ke GitHub
 2. Buka [vercel.com](https://vercel.com) dan import project
 3. Set environment variables di Vercel dashboard:
    - `REDIS_HOST`
    - `REDIS_PORT`
    - `REDIS_PASSWORD`
+   - `NEXT_PUBLIC_SITE_URL`
 4. Deploy! Vercel otomatis detect Next.js dan build
+
+### Custom Domain
+
+Proyek ini berjalan di custom domain **[digibouquet.tams.codes](https://digibouquet.tams.codes)** via Cloudflare DNS (CNAME → `cname.vercel-dns.com`).
 
 ---
 
