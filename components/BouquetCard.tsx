@@ -26,17 +26,19 @@ export default function BouquetCard({ bouquet }: BouquetCardProps) {
   const { flowers, mode, bushIndex, createdAt } = bouquet;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-all hover:border-pink-400/30 hover:shadow-lg hover:shadow-pink-400/10">
-      <div className="relative aspect-[3/4] w-full overflow-hidden">
+    <div className="group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#fdf8f3]/10 transition-all hover:border-pink-400/30 hover:shadow-lg hover:shadow-pink-400/10">
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f5f0e8]">
         {/* Layer 1: Bush background */}
-        <Image
-          src={getBushBackgroundUrl(bushIndex, mode)}
-          alt="Bush background"
-          fill
-          sizes="(max-width: 640px) 50vw, 250px"
-          className="object-cover"
-          unoptimized
-        />
+        <div className="absolute bottom-0 left-0 right-0" style={{ height: '75%' }}>
+          <Image
+            src={getBushBackgroundUrl(bushIndex, mode)}
+            alt="Bush background"
+            fill
+            sizes="(max-width: 640px) 50vw, 250px"
+            className="object-contain object-bottom"
+            unoptimized
+          />
+        </div>
 
         {/* Layer 2: Flowers */}
         {flowers.map((flower, index) => {
@@ -50,6 +52,7 @@ export default function BouquetCard({ bouquet }: BouquetCardProps) {
                 left: pos.left,
                 transform: `rotate(${pos.rotate}deg) scale(${pos.scale})`,
                 zIndex: 10 + index,
+                filter: 'drop-shadow(0 3px 6px rgba(0,0,0,0.15))',
               }}
             >
               <Image
@@ -65,15 +68,16 @@ export default function BouquetCard({ bouquet }: BouquetCardProps) {
         })}
 
         {/* Layer 3: Bush top overlay */}
-        <Image
-          src={getBushTopUrl(bushIndex, mode)}
-          alt="Bush top overlay"
-          fill
-          sizes="(max-width: 640px) 50vw, 250px"
-          className="object-cover"
-          style={{ zIndex: 20 }}
-          unoptimized
-        />
+        <div className="absolute bottom-0 left-0 right-0" style={{ height: '45%', zIndex: 20 }}>
+          <Image
+            src={getBushTopUrl(bushIndex, mode)}
+            alt="Bush top overlay"
+            fill
+            sizes="(max-width: 640px) 50vw, 250px"
+            className="object-contain object-bottom"
+            unoptimized
+          />
+        </div>
       </div>
 
       <div className="px-3 py-2 text-center">
