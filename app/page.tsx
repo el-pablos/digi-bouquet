@@ -64,14 +64,15 @@ export default function Home() {
           >
             POWERED BY ▲ VERCEL
           </a>
+          <span className="text-white/40">MADE BY TAMA</span>
           <a
             href="https://x.com/pau_wee_"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-white/70"
-            aria-label="Made by pau_wee_"
+            aria-label="Inspired by pau_wee_"
           >
-            MADE BY @PAU_WEE_
+            INSPIRED BY @PAU_WEE_
           </a>
         </footer>
       </div>

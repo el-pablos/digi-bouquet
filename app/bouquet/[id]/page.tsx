@@ -117,13 +117,24 @@ export default async function BouquetViewPage({ params }: PageProps) {
       <ShareButtons bouquet={bouquet} />
 
       {/* Footer */}
-      <div className="mt-12">
+      <div className="mt-12 flex flex-col items-center">
         <Link
           href="/"
           className="text-xs uppercase tracking-widest text-gray-400 transition-colors hover:text-gray-600"
         >
           ← Back to Homepage
         </Link>
+        <p className="mt-3 text-center text-[10px] text-gray-400">
+          Made by Tama ·{' '}
+          <a
+            href="https://x.com/pau_wee_"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-gray-600"
+          >
+            Inspired by @pau_wee_
+          </a>
+        </p>
       </div>
     </main>
   );
