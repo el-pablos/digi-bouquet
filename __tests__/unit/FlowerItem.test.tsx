@@ -4,7 +4,8 @@ import FlowerItem from '@/components/FlowerItem';
 // Mock next/image
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props: Record<string, unknown>) => {
+  default: ({ fill, priority, unoptimized, ...props }: Record<string, unknown>) => {
+    void fill; void priority; void unoptimized;
     // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return <img {...props} />;
   },
@@ -31,7 +32,7 @@ describe('FlowerItem', () => {
 
   it('menampilkan gambar bunga dengan alt text', () => {
     render(<FlowerItem {...defaultProps} />);
-    const img = screen.getByAlt('Bunga Rose');
+    const img = screen.getByAltText('Bunga Rose');
     expect(img).toBeInTheDocument();
   });
 

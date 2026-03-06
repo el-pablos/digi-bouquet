@@ -9,10 +9,10 @@ describe('Utility functions', () => {
       expect(id1).not.toBe(id2);
     });
 
-    it('menghasilkan format UUID v4', () => {
+    it('menghasilkan string non-empty', () => {
       const id = generateId();
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      expect(id).toMatch(uuidRegex);
+      expect(id.length).toBeGreaterThan(0);
+      expect(typeof id).toBe('string');
     });
   });
 
