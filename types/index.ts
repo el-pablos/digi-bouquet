@@ -22,6 +22,9 @@ export interface BouquetItem {
   mode: BouquetMode;
   bushIndex: BushIndex;
   createdAt: string;
+  fromName?: string;
+  toName?: string;
+  message?: string;
 }
 
 export interface ApiResponse<T> {
